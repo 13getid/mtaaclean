@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-MtaaClean Mombasa is a web-based incident reporting and tracking system that enables residents to report waste-related problems — illegal dumping, overflowing bins, uncollected waste — by submitting a description, photograph, and map location. Authorized staff can review, assign, and resolve reports through a dedicated dashboard.
+MtaaClean  is a web-based incident reporting and tracking system that enables residents to report waste-related problems — illegal dumping, overflowing bins, uncollected waste — by submitting a description, photograph, and map location. Authorized staff can review, assign, and resolve reports through a dedicated dashboard.
 
 The system demonstrates how a digital reporting workflow can improve visibility, accountability, and follow-up for waste-related incidents at the local level.
 

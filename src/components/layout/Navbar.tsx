@@ -12,9 +12,11 @@
 
 import { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Menu, X, Trash2 } from 'lucide-react'
+import { Menu, X, Trash2, LayoutDashboard, Shield } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAuth, UserButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/Button'
+import { useProfile } from '@/hooks/useProfile'
 
 const NAV_LINKS = [
   { label: 'How It Works', to: '/#how-it-works' },
@@ -25,6 +27,8 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const { isSignedIn } = useAuth()
+  const { isStaff, isAdmin } = useProfile()
 
   // Add border-bottom when scrolled past 10px
   useEffect(() => {
@@ -76,16 +80,49 @@ export function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
+
+              {isStaff && (
+                <NavLink
+                  to="/staff"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink hover:underline underline-offset-4 bg-brand-sage px-2 py-0.5 border border-brand-ink"
+                >
+                  <LayoutDashboard size={14} />
+                  Staff Queue
+                </NavLink>
+              )}
+
+              {isAdmin && (
+                <NavLink
+                  to="/admin"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink hover:underline underline-offset-4 bg-brand-orange px-2 py-0.5 border border-brand-ink"
+                >
+                  <Shield size={14} />
+                  Admin
+                </NavLink>
+              )}
             </nav>
 
             {/* Desktop CTA buttons */}
             <div className="hidden md:flex items-center gap-3">
-              <Button variant="ghost" size="sm" to="/sign-in">
-                Sign In
-              </Button>
-              <Button variant="primary" size="sm" to="/report">
-                Report Waste
-              </Button>
+              {isSignedIn ? (
+                <>
+                  <Button variant="primary" size="sm" to="/report">
+                    Report Waste
+                  </Button>
+                  <div className="p-0.5 border-2 border-brand-ink bg-white flex items-center justify-center">
+                    <UserButton afterSignOutUrl="/" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" size="sm" to="/sign-in">
+                    Sign In
+                  </Button>
+                  <Button variant="primary" size="sm" to="/report">
+                    Report Waste
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Mobile hamburger */}
@@ -132,23 +169,54 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              {isStaff && (
+                <Link
+                  to="/staff"
+                  onClick={() => setMenuOpen(false)}
+                  className="py-3 px-4 font-semibold text-brand-ink bg-brand-sage border-b border-brand-ink/20 flex items-center gap-2"
+                >
+                  <LayoutDashboard size={16} />
+                  Staff Incident Queue
+                </Link>
+              )}
+
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="py-3 px-4 font-semibold text-brand-ink bg-brand-orange border-b border-brand-ink/20 flex items-center gap-2"
+                >
+                  <Shield size={16} />
+                  Admin Dashboard
+                </Link>
+              )}
+
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t-2 border-brand-ink">
-                <Button
-                  variant="ghost"
-                  size="md"
-                  to="/sign-in"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  to="/report"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Report Waste
-                </Button>
+                {isSignedIn ? (
+                  <div className="flex items-center justify-between p-2 bg-white border-2 border-brand-ink">
+                    <span className="text-sm font-semibold">Account</span>
+                    <UserButton afterSignOutUrl="/" />
+                  </div>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="md"
+                      to="/sign-in"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Sign In
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      to="/report"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Report Waste
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </motion.div>

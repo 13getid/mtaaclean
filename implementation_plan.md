@@ -110,40 +110,43 @@ src/pages/NotFound.tsx
 
 **Dependencies:** Phase 1 done. Clerk account and Supabase project ready.
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Done
 
 ### Files to create/modify
 
 ```
-src/lib/clerk.ts          (Clerk config helper)
+src/lib/clerk.ts          (Clerk integration & App wrapper)
 src/lib/supabase.ts       (Supabase client with Clerk JWT injection)
-src/hooks/useProfile.ts   (fetch current user's profile)
+src/hooks/useProfile.ts   (fetch current user's profile & role)
 src/components/auth/ProtectedRoute.tsx
 src/components/auth/RoleGuard.tsx
 src/pages/SignInPage.tsx
 src/pages/SignUpPage.tsx
 backend/app/main.py
-backend/app/auth.py       (Clerk JWT verification)
-backend/app/webhooks.py   (Clerk user.created webhook → create profile)
+backend/app/config.py
+backend/app/auth.py       (Clerk JWKS verification & require_role dependency)
+backend/app/webhooks.py   (Clerk user.created / user.updated webhook handler)
+backend/app/supabase_client.py
 backend/requirements.txt
-.env.example              (updated with Clerk + Supabase vars)
-Supabase SQL migrations: 001_create_profiles.sql, 008_enable_rls.sql, 009_rls_policies.sql
+Supabase SQL migrations:
+  backend/app/migrations/001_create_profiles.sql
+  backend/app/migrations/002_profiles_rls.sql
 ```
 
 ### Tasks in order
 
-1. Create a Clerk application; copy publishable key and secret key.
-2. Create a Supabase project; copy URL and anon key.
-3. Configure Supabase to accept Clerk JWTs (set JWT secret or JWKS URL in Supabase dashboard).
-4. **Test the JWT integration** before writing any feature code: log in via Clerk in a test page, extract the JWT, and confirm Supabase RLS can resolve `auth.jwt() ->> 'sub'` correctly.
-5. Install `@clerk/clerk-react` and wrap `App.tsx` in `<ClerkProvider>`.
-6. Create `ProtectedRoute` and `RoleGuard` components.
-7. Add `/sign-in` and `/sign-up` routes.
-8. Create the FastAPI backend skeleton with a `/health` endpoint.
-9. Implement Clerk webhook handler: on `user.created`, insert a `profiles` row.
-10. Apply Supabase migrations: create `profiles` table + RLS policies.
-11. Verify: a new user can register, profile row is created, and the user is redirected to the resident dashboard.
-12. Verify: visiting `/staff` without the staff role shows a 403 page.
+- [x] Configure `@clerk/clerk-react` with `<ClerkProvider>` and publishable key
+- [x] Create authenticated Supabase client wrapper (`src/lib/supabase.ts`)
+- [x] Create `useProfile` hook querying user role and application profile
+- [x] Implement `<ProtectedRoute>` redirecting unauthenticated users to `/sign-in`
+- [x] Implement `<RoleGuard>` enforcing resident, staff, and admin access boundaries
+- [x] Build `/sign-in` and `/sign-up` brutalist pages
+- [x] Build FastAPI backend skeleton with CORS, health check, and `/api/auth/me`
+- [x] Implement Clerk JWKS RS256 token verification in `backend/app/auth.py`
+- [x] Implement Svix-verified Clerk webhook in `backend/app/webhooks.py`
+- [x] Generate database migrations for `profiles` table and Supabase RLS policies
+- [x] Update Navbar to display sign-in state, `UserButton`, and role badges
+- [x] Verify typecheck and production build pass with 0 errors
 
 ### Manual testing steps
 
