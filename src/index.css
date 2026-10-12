@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base resets ────────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    background-color: #F7F5EE;
+    color: #20211D;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  /* Visible focus ring for keyboard navigation */
+  *:focus-visible {
+    outline: 3px solid #B8ED70;
+    outline-offset: 2px;
+  }
+
+  /* Remove default list styles inside nav */
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* ── Utility classes shared across components ───────────────────── */
+@layer components {
+  /* Brutalist card */
+  .card-brutal {
+    @apply bg-white border-2 border-brand-ink p-6;
+  }
+
+  /* Brutalist section divider */
+  .divider-ink {
+    @apply border-t-2 border-brand-ink;
+  }
+
+  /* Status badge base */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 text-sm font-semibold border-2 border-brand-ink;
+  }
+}
