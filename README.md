@@ -2,9 +2,7 @@
 
 **A Waste Collection and Illegal Dumping Reporting System for Mombasa County, Kenya**
 
-> This is a final-year university IT project. It is not affiliated with or endorsed by Mombasa County Government or any other government body.
 
----
 
 ## Project Overview
 
@@ -184,12 +182,4 @@ This is an academic project. It is not affiliated with, endorsed by, or connecte
 
 ---
 
-## Academic Acknowledgement
 
-This project was built with AI coding assistance (Google Antigravity). All code, architecture decisions, and documentation have been reviewed and understood by the student author. The student is responsible for the accuracy, integrity, and originality of the work as submitted for assessment. Please refer to your university's AI use policy for guidance on acknowledgement requirements.
-
----
-
-## License
-
-This project is submitted in partial fulfilment of the requirements for a Bachelor of Science degree in Information Technology. It is not licensed for commercial use.
