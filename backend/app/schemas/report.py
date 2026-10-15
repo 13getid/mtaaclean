@@ -33,3 +33,12 @@ class ReportResponse(BaseModel):
 class ReportDetailResponse(ReportResponse):
     photos: List[dict] = []
     status_history: List[dict] = []
+
+
+class PublicMapReportResponse(BaseModel):
+    id: str
+    status: str
+    area_name: Optional[str]
+    latitude: float
+    longitude: float
+    submitted_at: datetime

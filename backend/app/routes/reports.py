@@ -3,12 +3,38 @@ FastAPI router for report submission and operations.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
 from app.auth import get_current_user, AuthUser
-from app.schemas.report import ReportCreateRequest, ReportResponse
+from app.schemas.report import ReportCreateRequest, ReportResponse, PublicMapReportResponse
 from app.services.coordinate_validator import is_within_mombasa_boundary
 from app.supabase_client import get_supabase_admin
 
 router = APIRouter(prefix="/api/reports", tags=["Reports"])
+
+
+@router.get("/map/public", response_model=List[PublicMapReportResponse])
+async def get_public_map_reports():
+    """
+    Returns non-rejected reports within Tudor for the public map view.
+    Only exposes public-safe fields (id, status, area_name, latitude, longitude, submitted_at).
+    No reporter IDs, user names, or phone numbers are exposed.
+    """
+    supabase = get_supabase_admin()
+    try:
+        res = (
+            supabase.table("reports")
+            .select("id, status, area_name, latitude, longitude, submitted_at")
+            .neq("status", "rejected")
+            .order("submitted_at", desc=True)
+            .limit(200)
+            .execute()
+        )
+        return res.data or []
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch public map reports: {str(e)}",
+        )
 
 
 @router.post("", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
