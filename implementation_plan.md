@@ -172,7 +172,7 @@ Supabase SQL migrations:
 
 **Dependencies:** Phase 2 done.
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Done
 
 ### Files to create
 
@@ -182,29 +182,33 @@ src/features/reports/MyReportsPage.tsx
 src/features/reports/ReportDetailPage.tsx
 src/features/reports/components/ReportForm.tsx
 src/features/reports/components/PhotoUpload.tsx
-src/features/reports/components/LocationPicker.tsx   (placeholder map)
+src/features/reports/components/LocationPicker.tsx
 src/features/reports/hooks/useSubmitReport.ts
 src/features/reports/hooks/useMyReports.ts
-src/features/reports/schemas/reportSchema.ts         (Zod schema)
-src/types/report.ts
+src/features/reports/schemas/reportSchema.ts
 backend/app/routes/reports.py
 backend/app/schemas/report.py
-backend/app/services/coordinate_validator.py         (Mombasa boundary check)
-Supabase SQL: 002_create_reports.sql, 003_create_report_photos.sql, 005_create_status_history.sql
+backend/app/services/coordinate_validator.py
+backend/app/data/mombasa_boundary.geojson
+Supabase SQL migrations:
+  backend/app/migrations/003_create_reports.sql
+  backend/app/migrations/004_create_report_photos.sql
+  backend/app/migrations/005_create_status_history.sql
 ```
 
 ### Tasks in order
 
-1. Apply Supabase migrations for `reports`, `report_photos`, `status_history`.
-2. Define the Zod schema for the report form.
-3. Build `PhotoUpload` component with drag-and-drop and preview.
-4. Build `LocationPicker` with a static map placeholder (Leaflet added in Phase 4).
-5. Build `ReportForm` using React Hook Form + the Zod schema.
-6. Implement `useSubmitReport`: (a) upload photo to Supabase Storage, (b) POST to FastAPI.
-7. Implement FastAPI `POST /api/reports` endpoint: validate JWT, validate coordinates, write to DB.
-8. Build `MyReportsPage`: fetch reports via Supabase client; display list.
-9. Build `ReportDetailPage`: fetch single report; display status history timeline.
-10. Add routes: `/reports/new`, `/reports`, `/reports/:id`.
+- [x] Apply Supabase database migrations for `reports`, `report_photos`, `status_history` with RLS
+- [x] Define Zod schema enforcing >= 20 characters, 10MB photo, and Tudor coordinates
+- [x] Build `PhotoUpload` component with drag-and-drop, preview, and mime validation
+- [x] Build `LocationPicker` with GPS detection and Tudor presets
+- [x] Build `ReportForm` using React Hook Form + Zod resolver
+- [x] Implement `useSubmitReport` uploading evidence to Supabase Storage and calling FastAPI
+- [x] Implement FastAPI `POST /api/reports` with Clerk JWT check, ray-casting boundary validation, and audit entry
+- [x] Build `MyReportsPage` displaying submitted reports, badges, and empty states
+- [x] Build `ReportDetailPage` showing photo evidence and status timeline
+- [x] Add routes in `App.tsx`: `/report`, `/reports`, `/reports/:id`
+- [x] Verify strict typecheck and production build pass with 0 errors
 
 ### Manual testing steps
 

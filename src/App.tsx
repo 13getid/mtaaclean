@@ -8,6 +8,9 @@ import { SignUpPage } from '@/pages/SignUpPage'
 import { NotFound } from '@/pages/NotFound'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { RoleGuard } from '@/components/auth/RoleGuard'
+import { NewReportPage } from '@/features/reports/NewReportPage'
+import { MyReportsPage } from '@/features/reports/MyReportsPage'
+import { ReportDetailPage } from '@/features/reports/ReportDetailPage'
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ''
 
@@ -22,17 +25,12 @@ export function App() {
             <Route path="/sign-in/*" element={<SignInPage />} />
             <Route path="/sign-up/*" element={<SignUpPage />} />
 
-            {/* Resident / Protected Routes Placeholder (Phase 3) */}
+            {/* Resident Reporting Routes */}
             <Route
               path="/report"
               element={
                 <ProtectedRoute>
-                  <div className="max-w-screen-xl mx-auto p-12 text-center">
-                    <h1 className="font-display text-3xl font-bold mb-4">Report Waste Incident</h1>
-                    <p className="text-brand-ink/70">
-                      Report submission form with photograph upload and Tudor map picker (Phase 3).
-                    </p>
-                  </div>
+                  <NewReportPage />
                 </ProtectedRoute>
               }
             />
@@ -41,12 +39,16 @@ export function App() {
               path="/reports"
               element={
                 <ProtectedRoute>
-                  <div className="max-w-screen-xl mx-auto p-12 text-center">
-                    <h1 className="font-display text-3xl font-bold mb-4">My Submitted Reports</h1>
-                    <p className="text-brand-ink/70">
-                      Resident incident tracking and status history timeline (Phase 3).
-                    </p>
-                  </div>
+                  <MyReportsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/reports/:id"
+              element={
+                <ProtectedRoute>
+                  <ReportDetailPage />
                 </ProtectedRoute>
               }
             />

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.auth import get_current_user, require_role, AuthUser
 from app.webhooks import router as webhooks_router
+from app.routes.reports import router as reports_router
 
 app = FastAPI(
     title="MtaaClean Mombasa API",
@@ -23,8 +24,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount webhooks
+# Mount routers
 app.include_router(webhooks_router)
+app.include_router(reports_router)
 
 
 @app.get("/health", tags=["System"])
