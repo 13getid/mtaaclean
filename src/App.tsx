@@ -11,6 +11,7 @@ import { RoleGuard } from '@/components/auth/RoleGuard'
 import { NewReportPage } from '@/features/reports/NewReportPage'
 import { MyReportsPage } from '@/features/reports/MyReportsPage'
 import { ReportDetailPage } from '@/features/reports/ReportDetailPage'
+import { MapPage } from '@/features/map/MapPage'
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ''
 
@@ -22,6 +23,7 @@ export function App() {
         <div className="flex-1">
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/map" element={<MapPage />} />
             <Route path="/sign-in/*" element={<SignInPage />} />
             <Route path="/sign-up/*" element={<SignUpPage />} />
 

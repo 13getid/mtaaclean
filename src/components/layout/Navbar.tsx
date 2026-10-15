@@ -20,7 +20,7 @@ import { useProfile } from '@/hooks/useProfile'
 
 const NAV_LINKS = [
   { label: 'How It Works', to: '/#how-it-works' },
-  { label: 'View Map',     to: '/#map-preview' },
+  { label: 'Incident Map', to: '/map' },
   { label: 'Track Report', to: '/reports' },
 ]
 
