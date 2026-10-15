@@ -1,5 +1,21 @@
-import { MapPin, Navigation, Info } from 'lucide-react'
-import { MAP_CENTER } from '@/lib/constants'
+import { useEffect } from 'react'
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polygon,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet'
+import { MapPin, Navigation } from 'lucide-react'
+import {
+  MAP_CENTER,
+  MAP_DEFAULT_ZOOM,
+  TILE_URL,
+  TILE_ATTRIBUTION,
+  TUDOR_POLYGON_LATLNGS,
+} from '@/lib/constants'
+import { locationPickerIcon } from '@/features/map/ReportMarker'
 
 interface LocationPickerProps {
   latitude: number | null
@@ -8,13 +24,40 @@ interface LocationPickerProps {
   error?: string
 }
 
-// Preset verified locations within Tudor for quick picking in the MVP
+// Preset locations within Tudor for quick picking
 const TUDOR_PRESETS = [
   { name: 'Tudor Creek Waterfront', lat: -4.0253, lng: 39.6632 },
-  { name: 'Tudor Four Junction', lat: -4.0320, lng: 39.6680 },
-  { name: 'Technical University of Mombasa (TUM) Area', lat: -4.0375, lng: 39.6648 },
-  { name: 'Tom Mboya Avenue roadside', lat: -4.0410, lng: 39.6705 },
+  { name: 'Tudor Four Junction', lat: -4.032, lng: 39.668 },
+  { name: 'Technical University of Mombasa (TUM)', lat: -4.0375, lng: 39.6648 },
+  { name: 'Tom Mboya Avenue', lat: -4.041, lng: 39.6705 },
 ]
+
+/**
+ * Component to handle map clicks and sync marker position
+ */
+function MapClickHandler({
+  onLocationSelect,
+}: {
+  onLocationSelect: (lat: number, lng: number) => void
+}) {
+  useMapEvents({
+    click(e) {
+      onLocationSelect(e.latlng.lat, e.latlng.lng)
+    },
+  })
+  return null
+}
+
+/**
+ * Controller to smoothly pan the map when external coordinates change
+ */
+function PanController({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap()
+  useEffect(() => {
+    map.panTo([lat, lng], { animate: true })
+  }, [lat, lng, map])
+  return null
+}
 
 export function LocationPicker({
   latitude,
@@ -22,8 +65,8 @@ export function LocationPicker({
   onLocationChange,
   error,
 }: LocationPickerProps) {
-  const currentLat = latitude ?? MAP_CENTER[0]
-  const currentLng = longitude ?? MAP_CENTER[1]
+  const selectedLat = latitude ?? MAP_CENTER[0]
+  const selectedLng = longitude ?? MAP_CENTER[1]
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -47,7 +90,7 @@ export function LocationPicker({
       <div className="flex items-center justify-between">
         <label className="font-display font-bold text-sm text-brand-ink uppercase tracking-wider flex items-center gap-1.5">
           <MapPin size={16} />
-          Location in Tudor <span className="text-brand-red">*</span>
+          Pin Location in Tudor <span className="text-brand-red">*</span>
         </label>
         <button
           type="button"
@@ -59,23 +102,60 @@ export function LocationPicker({
         </button>
       </div>
 
-      {/* Demonstration Location Map / Target */}
-      <div className="border-2 border-brand-ink bg-brand-sage/60 p-4 flex flex-col gap-3">
-        <div className="flex items-center justify-between bg-white border border-brand-ink p-2 text-xs">
-          <span className="font-mono font-bold text-brand-ink">
-            Coordinates: {currentLat.toFixed(4)}, {currentLng.toFixed(4)}
-          </span>
-          <span className="bg-brand-green border border-brand-ink px-1.5 py-0.5 font-bold uppercase tracking-wider text-[10px]">
-            Tudor Operational Zone
-          </span>
+      {/* Interactive Leaflet Map Container */}
+      <div className="border-2 border-brand-ink bg-white overflow-hidden shadow-brutal-sm">
+        <div className="h-64 sm:h-72 w-full relative z-0">
+          <MapContainer
+            center={[selectedLat, selectedLng]}
+            zoom={MAP_DEFAULT_ZOOM}
+            scrollWheelZoom={false}
+            className="h-full w-full"
+            style={{ height: '100%', width: '100%', background: '#F7F5EE' }}
+          >
+            <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+
+            {/* Operational Boundary Overlay */}
+            <Polygon
+              positions={TUDOR_POLYGON_LATLNGS}
+              pathOptions={{
+                color: '#20211D',
+                weight: 2,
+                fillColor: '#B8ED70',
+                fillOpacity: 0.15,
+                dashArray: '4, 4',
+              }}
+            />
+
+            {/* Interactive Selected Marker */}
+            <Marker
+              position={[selectedLat, selectedLng]}
+              icon={locationPickerIcon}
+            />
+
+            {/* Event Handler and Pan Controller */}
+            <MapClickHandler onLocationSelect={onLocationChange} />
+            <PanController lat={selectedLat} lng={selectedLng} />
+          </MapContainer>
+
+          {/* Map Helper overlay badge */}
+          <div className="absolute bottom-2 left-2 z-[400] bg-white/95 border border-brand-ink px-2 py-0.5 text-[11px] font-semibold text-brand-ink pointer-events-none shadow-brutal-sm">
+            Click anywhere in the green zone to move the pin
+          </div>
         </div>
 
-        {/* Quick select buttons */}
-        <div>
-          <span className="text-xs font-bold text-brand-ink/70 block mb-1.5">
-            Quick Select Common Tudor Spots:
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {/* Selected Coordinates Status */}
+        <div className="p-3 bg-brand-offwhite border-t-2 border-brand-ink flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-mono font-bold text-brand-ink">
+              {selectedLat.toFixed(4)}, {selectedLng.toFixed(4)}
+            </span>
+            <span className="bg-brand-green border border-brand-ink px-1.5 py-0.5 font-bold uppercase tracking-wider text-[10px]">
+              Tudor Zone
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-brand-ink/70">Presets:</span>
             {TUDOR_PRESETS.map((preset) => {
               const isSelected =
                 latitude !== null &&
@@ -89,53 +169,17 @@ export function LocationPicker({
                   type="button"
                   onClick={() => onLocationChange(preset.lat, preset.lng)}
                   className={[
-                    'text-left p-2 text-xs border border-brand-ink transition-colors font-medium flex items-center justify-between',
+                    'px-2 py-0.5 text-[11px] border border-brand-ink transition-colors font-medium',
                     isSelected
                       ? 'bg-brand-ink text-brand-green font-bold'
-                      : 'bg-white hover:bg-brand-offwhite text-brand-ink',
+                      : 'bg-white hover:bg-brand-sage text-brand-ink',
                   ].join(' ')}
                 >
-                  <span>{preset.name}</span>
-                  {isSelected && <span className="text-xs">✓</span>}
+                  {preset.name}
                 </button>
               )
             })}
           </div>
-        </div>
-
-        {/* Manual coordinate adjustment inputs */}
-        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-brand-ink/20">
-          <div>
-            <label className="text-[11px] font-bold text-brand-ink block mb-0.5">
-              Latitude (Tudor: -4.060 to -4.015)
-            </label>
-            <input
-              type="number"
-              step="0.0001"
-              value={latitude ?? ''}
-              onChange={(e) => onLocationChange(parseFloat(e.target.value) || 0, longitude ?? MAP_CENTER[1])}
-              placeholder="-4.0253"
-              className="w-full text-xs p-1.5 border border-brand-ink font-mono bg-white focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="text-[11px] font-bold text-brand-ink block mb-0.5">
-              Longitude (Tudor: 39.645 to 39.690)
-            </label>
-            <input
-              type="number"
-              step="0.0001"
-              value={longitude ?? ''}
-              onChange={(e) => onLocationChange(latitude ?? MAP_CENTER[0], parseFloat(e.target.value) || 0)}
-              placeholder="39.6632"
-              className="w-full text-xs p-1.5 border border-brand-ink font-mono bg-white focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-[11px] text-brand-ink/70">
-          <Info size={13} className="shrink-0" />
-          <span>Full interactive Leaflet map pin-drop is enabled in Phase 4.</span>
         </div>
       </div>
 
