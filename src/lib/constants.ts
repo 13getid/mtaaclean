@@ -32,6 +32,16 @@ export const TUDOR_BOUNDS = {
   west:  39.630,
 } as const
 
+// Tudor boundary polygon coordinates in [lat, lng] pairs for Leaflet Polygon rendering
+export const TUDOR_POLYGON_LATLNGS: [number, number][] = [
+  [-4.0150, 39.6500],
+  [-4.0150, 39.6800],
+  [-4.0450, 39.6900],
+  [-4.0600, 39.6700],
+  [-4.0450, 39.6450],
+  [-4.0150, 39.6500],
+]
+
 // Tile provider — configurable via env variable
 export const TILE_URL =
   import.meta.env.VITE_TILE_URL ??
