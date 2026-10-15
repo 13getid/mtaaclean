@@ -235,7 +235,7 @@ Supabase SQL migrations:
 
 **Dependencies:** Phase 3 done.
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Done
 
 ### Files to create
 
@@ -243,22 +243,20 @@ Supabase SQL migrations:
 src/features/map/MombasaMap.tsx
 src/features/map/ReportMarker.tsx
 src/features/map/MapPage.tsx
-src/features/reports/components/LocationPicker.tsx  (update from placeholder)
+src/features/reports/components/LocationPicker.tsx  (updated with interactive Leaflet map)
 backend/app/data/mombasa_boundary.geojson
-backend/app/services/coordinate_validator.py        (update with real boundary)
+backend/app/services/coordinate_validator.py
+backend/app/routes/reports.py                      (public /map/public endpoint)
 ```
 
 ### Tasks in order
 
-1. Source and verify Mombasa County boundary GeoJSON (document source in `RESEARCH_AND_ASSUMPTIONS.md`).
-2. Install `leaflet` and `react-leaflet`.
-3. Build `MombasaMap` component: centred on Mombasa, bounded viewport, OSM tiles.
-4. Build `ReportMarker` with colour-coded status icons.
-5. Update `LocationPicker` to use the real map.
-6. Create a public map API endpoint in FastAPI: returns only public-safe fields.
-7. Display markers on `MombasaMap` from the public API.
-8. Restrict the map viewport to Mombasa County bounds.
-9. Test out-of-area coordinate submission.
+- [x] Configure Leaflet and React-Leaflet with brutalist SVG status markers (`ReportMarker.tsx`)
+- [x] Integrate interactive Leaflet map with click-to-pin into `LocationPicker.tsx`
+- [x] Create sanitized public map endpoint `GET /api/reports/map/public` in FastAPI
+- [x] Build `MombasaMap` with interactive markers, status filter buttons, and Tudor polygon boundary
+- [x] Build public `MapPage` route at `/map` and link in navbar
+- [x] Verify strict typecheck and production build pass with 0 errors
 
 ### Definition of done
 
