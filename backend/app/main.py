@@ -8,6 +8,7 @@ from app.config import settings
 from app.auth import get_current_user, require_role, AuthUser
 from app.webhooks import router as webhooks_router
 from app.routes.reports import router as reports_router
+from app.routes.staff import router as staff_router
 
 app = FastAPI(
     title="MtaaClean Mombasa API",
@@ -27,6 +28,7 @@ app.add_middleware(
 # Mount routers
 app.include_router(webhooks_router)
 app.include_router(reports_router)
+app.include_router(staff_router)
 
 
 @app.get("/health", tags=["System"])
