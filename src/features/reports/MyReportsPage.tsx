@@ -9,6 +9,12 @@ import type { Report } from '@/types'
 export function MyReportsPage() {
   const { reports, isLoading, error, refresh } = useMyReports()
 
+  const counts = {
+    submitted: reports.filter((r) => r.status === 'submitted').length,
+    in_progress: reports.filter((r) => ['under_review', 'assigned', 'in_progress'].includes(r.status)).length,
+    resolved: reports.filter((r) => r.status === 'resolved').length,
+  }
+
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
       {/* Header */}
@@ -20,6 +26,17 @@ export function MyReportsPage() {
           <p className="text-sm text-brand-ink/70 mt-1">
             Track resolution status and updates on your reported waste issues in Tudor.
           </p>
+          <div className="flex flex-wrap items-center gap-3 mt-3 text-xs">
+            <span className="border border-brand-ink bg-brand-offwhite px-2 py-0.5 font-bold">
+              {counts.submitted} Pending
+            </span>
+            <span className="border border-brand-ink bg-brand-orange px-2 py-0.5 font-bold">
+              {counts.in_progress} Active / In Progress
+            </span>
+            <span className="border border-brand-ink bg-brand-green px-2 py-0.5 font-bold">
+              {counts.resolved} Resolved
+            </span>
+          </div>
         </div>
         <Button
           variant="primary"

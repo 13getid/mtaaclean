@@ -14,6 +14,7 @@ import { ReportDetailPage } from '@/features/reports/ReportDetailPage'
 import { MapPage } from '@/features/map/MapPage'
 import { StaffDashboardPage } from '@/features/staff/StaffDashboardPage'
 import { StaffReportDetailPage } from '@/features/staff/StaffReportDetailPage'
+import { AdminDashboardPage } from '@/features/admin/AdminDashboardPage'
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ''
 
@@ -82,16 +83,11 @@ export function App() {
 
             {/* Admin Area Protected Route */}
             <Route
-              path="/admin/*"
+              path="/admin"
               element={
                 <ProtectedRoute>
                   <RoleGuard allowedRoles={['admin']}>
-                    <div className="max-w-screen-xl mx-auto p-12 text-center">
-                      <h1 className="font-display text-3xl font-bold mb-4">Administrator Management</h1>
-                      <p className="text-brand-ink/70">
-                        User role assignment and audit log viewer.
-                      </p>
-                    </div>
+                    <AdminDashboardPage />
                   </RoleGuard>
                 </ProtectedRoute>
               }

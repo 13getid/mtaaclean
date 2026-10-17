@@ -1,14 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Filter, Search, RefreshCw, LayoutDashboard } from 'lucide-react'
 import { useStaffOperations } from './hooks/useStaffOperations'
 import { ReportQueue } from './components/ReportQueue'
+import { MetricsOverview, type MetricsData } from '@/components/ui/MetricsOverview'
 import { Button } from '@/components/ui/Button'
-import type { ReportStatus } from '@/lib/constants'
+import { API_BASE_URL, type ReportStatus } from '@/lib/constants'
+import { useAuth } from '@clerk/clerk-react'
 
 export function StaffDashboardPage() {
   const { reports, isLoading, error, fetchQueue } = useStaffOperations()
+  const { getToken } = useAuth()
   const [selectedFilter, setSelectedFilter] = useState<ReportStatus | 'all'>('all')
   const [search, setSearch] = useState('')
+  const [metrics, setMetrics] = useState<MetricsData | null>(null)
+
+  const loadMetrics = async () => {
+    try {
+      const token = await getToken({ template: 'supabase' }).catch(() => getToken())
+      const res = await fetch(`${API_BASE_URL}/api/admin/metrics`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setMetrics(data)
+      }
+    } catch {
+      // Non-blocking metrics
+    }
+  }
+
+  useEffect(() => {
+    loadMetrics()
+  }, [])
 
   const handleFilterChange = (status: ReportStatus | 'all') => {
     setSelectedFilter(status)
@@ -52,6 +75,9 @@ export function StaffDashboardPage() {
           {error}
         </div>
       )}
+
+      {/* Real-time Status Metric Cards */}
+      {metrics && <MetricsOverview metrics={metrics} />}
 
       {/* Filter & Search Bar */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 mb-6 bg-white border-2 border-brand-ink p-3 shadow-brutal-sm">
