@@ -274,7 +274,7 @@ backend/app/routes/reports.py                      (public /map/public endpoint)
 
 **Dependencies:** Phase 4 done.
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Done
 
 ### Files to create
 
@@ -285,21 +285,25 @@ src/features/staff/components/ReportQueue.tsx
 src/features/staff/components/AssignmentForm.tsx
 src/features/staff/components/StatusUpdateForm.tsx
 src/features/staff/components/ResolutionForm.tsx
+src/features/staff/hooks/useStaffOperations.ts
 backend/app/routes/staff.py
+backend/app/schemas/staff.py
 backend/app/services/transition_validator.py
-Supabase SQL: 004_create_assignments.sql
+Supabase SQL: backend/app/migrations/006_create_assignments.sql
 ```
 
 ### Tasks in order
 
-1. Apply Supabase migration for `assignments`.
-2. Build `ReportQueue` with filters (status, date range).
-3. Build `AssignmentForm` with staff member dropdown (fetched from profiles where role = 'staff').
-4. Build `StatusUpdateForm` with valid next-state options based on current status.
-5. Build `ResolutionForm` with notes and optional after-photo upload.
-6. Implement FastAPI `PATCH /api/reports/{id}/status` with transition validation.
-7. Implement FastAPI `POST /api/reports/{id}/assign`.
-8. Test all permitted and rejected transitions.
+- [x] Apply Supabase database migration for `assignments` with RLS (`006_create_assignments.sql`)
+- [x] Build `ReportQueue` with status pills and search bar
+- [x] Build `AssignmentForm` with staff member dropdown and dispatch notes
+- [x] Build `StatusUpdateForm` with valid next-state options and rejection justification validation
+- [x] Build `ResolutionForm` with completion notes and after-cleanup photo evidence upload
+- [x] Implement FastAPI `PATCH /api/reports/{id}/status` with transition state graph validation
+- [x] Implement FastAPI `POST /api/reports/{id}/assign` with auto-transition to `assigned`
+- [x] Implement FastAPI `GET /api/staff/reports` and `GET /api/staff/members`
+- [x] Mount staff routes (`/staff`, `/staff/reports/:id`) guarded by `<RoleGuard allowedRoles={['staff', 'admin']}>`
+- [x] Verify strict typecheck and production build pass with 0 errors
 
 ### Definition of done
 
