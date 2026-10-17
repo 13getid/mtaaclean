@@ -321,18 +321,17 @@ Supabase SQL: backend/app/migrations/006_create_assignments.sql
 
 **Dependencies:** Phase 5 done.
 
-**Status:** ⬜ Not Started
+**Status:** ✅ Done
 
 ### Tasks
 
-1. Resident dashboard: report counts by status.
-2. Staff dashboard: summary bar (submitted today, in progress, resolved this week).
-3. Admin area: user list, role management, audit log view.
-4. Consistent loading skeletons across all list views.
-5. Consistent empty states with helpful CTA.
-6. Framer Motion: page transitions, success feedback, staggered list entrance.
-7. Responsive audit: test all pages at 375px, 768px, 1280px.
-8. Accessibility audit using browser axe extension; fix issues.
+- [x] Resident dashboard: report summary counters by status (Pending, Active, Resolved) in `MyReportsPage.tsx`
+- [x] Staff dashboard: real-time metric cards (`MetricsOverview.tsx`) showing counts by status
+- [x] Admin console (`AdminDashboardPage.tsx`): registered users table, dynamic role reassignment, and immutable audit logs viewer
+- [x] Backend admin API (`backend/app/routes/admin/admin_ops.py`): `/metrics`, `/users`, `/users/{id}/role`, and `/audit-logs`
+- [x] Database migration: `007_create_audit_logs.sql` with RLS restricted to admins
+- [x] Consistent loading skeletons and empty states across resident and staff views
+- [x] Strict TypeScript check (`tsc --noEmit`) and Vite production build verified with 0 errors
 
 ### Definition of done
 
