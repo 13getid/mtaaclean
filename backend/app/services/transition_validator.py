@@ -4,7 +4,6 @@ Enforces business rules on permitted status progressions.
 """
 
 from typing import Tuple, List, Optional
-from fastapi import HTTPException, status
 
 # Permitted state progression graph
 PERMITTED_TRANSITIONS = {
